@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="ta"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Madurai 2 • Retail Performance OS V3</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Tamil",sans-serif;background:#eef2f7;color:#172033}button{font:inherit;cursor:pointer}
+.top{height:64px;background:#111827;color:#fff;padding:0 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.brand{font-weight:900}.brand span{font-size:10px;opacity:.6;margin-left:8px}.layout{display:flex;min-height:calc(100vh - 64px)}
+aside{width:235px;background:#fff;padding:14px;border-right:1px solid #ddd;position:sticky;top:64px;height:calc(100vh - 64px)}
+.nav{width:100%;padding:12px;margin:3px 0;border:0;border-radius:10px;background:#fff;text-align:left;font-weight:700;color:#667085}.nav.active,.nav:hover{background:#eaf1ff;color:#2563eb}
+.nav small{display:block;font-size:10px;font-weight:400;margin-top:3px}.main{padding:22px;flex:1;max-width:1450px}.view{display:none}.view.active{display:block}
+.title{font-size:24px;font-weight:900}.sub{font-size:12px;color:#667085;margin:5px 0 14px}.periodTabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.periodBtn{padding:9px 13px;border:1px solid #d8dee7;border-radius:10px;background:#fff;font-weight:800;font-size:11px}.periodBtn.active{background:#172033;color:#fff}
+.periodPanel{background:#fff;border:1px solid #e1e6ed;border-radius:16px;padding:14px;box-shadow:0 5px 18px #15223808}.dateLine{font-size:12px;margin-bottom:10px}
+.metricGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.metricCard{border:1px solid #e8ecf1;border-radius:11px;padding:10px;background:#fafbfc}
+.metricCard small{display:block;color:#667085;font-size:9px;font-weight:800}.metricCard b{display:block;font-size:15px;margin:5px 0}.metricCard span{font-size:9px;font-weight:800}
+.good{color:#087f5b}.bad{color:#c62828}.warn{color:#a66b00}.neutral{color:#667085}.analysisBox{margin-top:10px;padding:11px;border-radius:11px;background:#f7f9fb;font-size:11px;line-height:1.55}
+.hourlyWrap{margin-top:14px;background:#fff;border:1px solid #e1e6ed;border-radius:15px;padding:13px}.sectionTitle{font-weight:900;font-size:13px;margin-bottom:10px}.hours{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.hour{border-radius:12px;padding:11px;border:1px solid #e4e8ee;background:#fafbfc}.hour b{display:block;font-size:22px;margin:4px 0}.hour small,.hour span{font-size:9px;font-weight:800}.hour.low b,.hour.low span{color:#c62828}.hour.good b,.hour.good span{color:#087f5b}.hour.warn b,.hour.warn span{color:#a66b00}
+.tablebox{background:#fff;border-radius:15px;overflow:auto;border:1px solid #e1e6ed}.table{width:100%;border-collapse:collapse;min-width:900px;font-size:11px}.table th,.table td{padding:9px;border-bottom:1px solid #edf0f4;text-align:left;white-space:nowrap}.table th{background:#f7f9fb;color:#667085;position:sticky;top:0}
+.teams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border:1px solid #e1e6ed;border-radius:15px;padding:15px}.num{font-size:25px;font-weight:900;margin-top:5px}
+.focus{margin-top:10px;padding:10px;border-radius:10px;background:#fff7e6;border:1px solid #f2dcab;font-size:11px;line-height:1.5}.strong{margin-top:8px;padding:10px;border-radius:10px;background:#effbf6;border:1px solid #c8efdf;font-size:11px}
+.upload{padding:22px;background:#fff;border:1px dashed #9aa7b8;border-radius:15px;text-align:center}
+.mobileArea{background:#dfe5ec;padding:28px;display:flex;justify-content:center;margin-top:20px}.phone{width:390px;max-width:100%;background:#f3f5f8;border:7px solid #172033;border-radius:25px;overflow:hidden}
+.mhead{background:linear-gradient(135deg,#111827,#263449);color:#fff;padding:18px}.mhero{margin:12px;background:#fff;border-radius:17px;padding:15px}.mname{font-size:20px;font-weight:900}.mscore{font-size:29px;font-weight:900}.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}.mcard{background:#fff;border-radius:13px;padding:12px}.mrow{display:flex;justify-content:space-between;padding:11px;background:#fff;border-bottom:1px solid #eee;font-size:11px}.mbottom{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;padding:9px;text-align:center;font-size:9px}.mbottom b{display:block;font-size:16px}
+@media(max-width:1050px){.metricGrid{grid-template-columns:repeat(4,1fr)}.hours{grid-template-columns:repeat(3,1fr)}}@media(max-width:800px){aside{display:none}.main{padding:12px}.metricGrid{grid-template-columns:1fr 1fr}.hours{grid-template-columns:1fr 1fr}.teams{grid-template-columns:1fr}}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style><style>
+.sourceNote{background:#eef4ff;border:1px solid #d8e5ff;border-radius:10px;padding:9px 11px;font-size:10px;line-height:1.5;margin-bottom:10px}
+.hour em{display:block;font-size:8px;color:#98a2b3;font-style:normal;margin-top:6px}
+.rankBig{font-size:12px;font-weight:900;color:#087f5b;margin-bottom:6px}.rankMedal{font-size:12px;font-weight:900;margin-bottom:6px}.gapText{font-size:10px;color:#c77b00;margin:4px 0}
+.memberBox{margin-top:9px;padding:9px;border-radius:9px;background:#effbf6;border:1px solid #c8efdf;font-size:10px;line-height:1.55}.memberBox.weak{background:#fff5f4;border-color:#ffd1cc;color:#8f241d}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style><style>
+.balanceHero{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0;padding:12px 15px;border:2px solid #e0a400;border-radius:13px;background:linear-gradient(90deg,#fff8d9,#fffdf1)}
+.balanceHero small{display:block;font-size:10px;font-weight:900;color:#8a6500;letter-spacing:.5px}
+.balanceHero b{display:block;font-size:28px;color:#b42318;line-height:1.1;margin-top:3px}
+.balanceHero span{font-size:10px;font-weight:700;color:#694f00;text-align:right;max-width:520px;line-height:1.45}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style><style>
+.ftdGrid{grid-template-columns:repeat(5,1fr)}
+.balanceCard{background:linear-gradient(135deg,#fff2d6,#fff9ed)!important;border:2px solid #e0a400!important;box-shadow:0 5px 16px rgba(224,164,0,.18)}
+.balanceCard b{font-size:30px!important;color:#b42318!important}
+.balanceCard span{font-weight:900}
+@media(max-width:1050px){.ftdGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.ftdGrid{grid-template-columns:1fr 1fr}}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style><style>
+.rangeTag{float:right;background:#eef4ff;color:#2457a6;border:1px solid #cddfff;border-radius:999px;padding:5px 9px;font-size:9px;font-weight:900}
+.ftdGrid{grid-template-columns:repeat(5,1fr)}
+.balanceCard{background:linear-gradient(135deg,#fff1d6,#fffaf0)!important;border:2px solid #e0a400!important;box-shadow:0 6px 18px rgba(224,164,0,.18)}
+.balanceCard b{font-size:30px!important;color:#b42318!important}
+.balanceCard span{font-weight:900}
+@media(max-width:1050px){.ftdGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.ftdGrid{grid-template-columns:1fr 1fr}.rangeTag{float:none;display:block;width:max-content;margin-top:6px}}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style>
+<style>
+/* V8 visual upgrade */
+.ftdHeroGrid{display:grid;grid-template-columns:1.15fr 1.15fr 1fr;gap:12px;margin-bottom:13px}
+.heroBox{background:#fff;border:1px solid #dfe5ec;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(16,24,40,.06)}
+.heroBox.dateHero{background:linear-gradient(135deg,#eef6ff,#ffffff);border-color:#bcd8ff}
+.heroBox.tarHero{background:linear-gradient(135deg,#fff7ed,#ffffff);border-color:#ffd8a8}
+.heroBox.balanceHero{background:linear-gradient(135deg,#fff0ed,#fffaf9);border:2px solid #e05b4f}
+.heroBox small{display:block;font-size:10px;font-weight:900;color:#667085;letter-spacing:.5px}
+.heroBox .heroValue{font-size:28px;font-weight:950;line-height:1.15;margin-top:6px}
+.heroBox.dateHero .heroValue{font-size:25px;color:#1757a6}
+.heroBox.tarHero .heroValue{font-size:29px;color:#9a4d00}
+.heroBox.balanceHero .heroValue{font-size:34px;color:#b42318}
+.heroBox .heroSub{font-size:10px;font-weight:800;margin-top:7px}
+.ftdGrid{grid-template-columns:repeat(4,1fr)}
+.sectionIntro{margin:0 0 10px;font-size:11px;color:#667085}
+.fmCards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.fmCard{background:#fff;border:1px solid #dfe5ec;border-radius:17px;padding:15px;box-shadow:0 7px 22px rgba(16,24,40,.06)}
+.fmCard.first{border:2px solid #e0a400;background:linear-gradient(145deg,#fff9df,#fff)}
+.fmTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fmName{font-size:18px;font-weight:950}.fmRank{font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;background:#eef4ff;color:#2457a6}
+.fmCard.first .fmRank{background:#fff0b3;color:#805b00}
+.fmScore{font-size:30px;font-weight:950;margin:11px 0 8px}.fmScore small{font-size:10px;color:#667085;font-weight:800}
+.fmLine{padding:9px 0;border-top:1px solid #edf0f4;font-size:10px;line-height:1.5}
+.fmLine b{display:block;font-size:10px;margin-bottom:3px}
+.fmAction{margin-top:10px;padding:11px;border-radius:11px;background:#f4f8ff;border:1px solid #dce8ff;font-size:10px;line-height:1.55}
+.fmFocus{margin-top:8px;padding:10px;border-radius:11px;background:#fff8e7;border:1px solid #f3dfad;font-size:10px;line-height:1.55}
+.staffStrength{min-width:260px;white-space:normal!important;line-height:1.45}
+.staffFocus{min-width:300px;white-space:normal!important;line-height:1.45}
+.kpiTag{display:inline-block;padding:3px 6px;border-radius:6px;background:#eefbf6;color:#087f5b;font-size:8px;font-weight:900;margin:2px 2px 2px 0}
+.focusTag{display:inline-block;padding:3px 6px;border-radius:6px;background:#fff5e6;color:#9a6100;font-size:8px;font-weight:900;margin:2px 2px 2px 0}
+.divisionNote{background:#eef6ff;border:1px solid #cfe1ff;border-radius:12px;padding:11px;font-size:10px;line-height:1.55;margin-bottom:12px}
+@media(max-width:1050px){.ftdHeroGrid{grid-template-columns:1fr 1fr}.ftdGrid{grid-template-columns:repeat(2,1fr)}.fmCards{grid-template-columns:1fr}}
+@media(max-width:700px){.ftdHeroGrid{grid-template-columns:1fr}.ftdGrid{grid-template-columns:1fr 1fr}}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style>
+<style>
+.divBoxGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;align-items:start}.divisionLayout{display:grid;grid-template-columns:54% 46%;gap:12px;align-items:start}.divisionLeft,.divisionRight{min-width:0}.analysisPanel{background:#fff;border:1px solid #dfe5ec;border-radius:14px;padding:11px;box-shadow:0 5px 16px rgba(16,24,40,.05);margin-bottom:10px}.analysisPanel.good{border-color:#b9e2ca;background:#f7fcf8}.analysisPanel.warn{border-color:#f2d39a;background:#fffaf0}.analysisPanel.focus{border-color:#efb7b7;background:#fff7f7}.analysisPanel h4{margin:0 0 6px;font-size:11px}.analysisPanel ul{margin:5px 0 0 16px;padding:0}.analysisPanel li{font-size:10px;line-height:1.5;margin:3px 0}.miniStatGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}.miniStat{padding:9px;border:1px solid #e4e9ef;border-radius:10px;background:#f8fafc}.miniStat b{display:block;font-size:9px;color:#667085}.miniStat span{font-size:13px;font-weight:950}.compactDivisionTable{width:100%;min-width:0!important;table-layout:fixed}.compactDivisionTable th,.compactDivisionTable td{padding:7px 6px!important;font-size:9px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.compactDivisionTable th:nth-child(1){width:24%}.compactDivisionTable th:nth-child(2),.compactDivisionTable th:nth-child(3){width:15%}.compactDivisionTable th:nth-child(4){width:12%}.compactDivisionTable th:nth-child(5){width:18%}.compactDivisionTable th:nth-child(6){width:16%}.compactDivisionTable th:nth-child(7){width:10%}.noScroll{overflow:visible!important}@media(max-width:1000px){.divisionLayout{grid-template-columns:1fr}.compactDivisionTable th,.compactDivisionTable td{font-size:8px!important;padding:6px 4px!important}}
+.divBigBox{background:#fff;border:1px solid #dfe5ec;border-radius:17px;padding:14px;box-shadow:0 7px 22px rgba(16,24,40,.06)}
+.divBoxHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 13px;border-radius:12px;background:linear-gradient(90deg,#eaf7ee,#ffffff);border:1px solid #cfe9d7;font-weight:950}
+.divBoxHead small{font-size:9px;color:#667085;font-weight:800}
+.pbHead{background:linear-gradient(90deg,#fff5e8,#ffffff);border-color:#f4d7ad}
+.divIntro{font-size:10px;line-height:1.5;color:#667085;padding:10px 2px}
+.divFocus{margin-top:10px;padding:10px;border-radius:11px;background:#f1fbf5;border:1px solid #d3efdc;font-size:10px;line-height:1.5}
+.pbFocus{background:#fff8e9;border-color:#f2dfb7}
+.divisionTable{min-width:650px}
+#panel-WTD .metricCard:nth-child(1) span,
+#panel-WTD .metricCard:nth-child(2) span{color:#c62828!important}
+#panel-WTD .metricCard:nth-child(3) span{color:#c62828!important}
+#panel-WTD .metricCard:nth-child(4) span{color:#a66b00!important}
+#panel-WTD .analysisBox{background:#fff7ed;border:1px solid #f6d5ad}
+@media(max-width:900px){.divBoxGrid{grid-template-columns:1fr}}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style><style>
+#pb .divBigBox,#division .divBigBox{width:100%}
+#pb .divFocus,#division .divFocus{line-height:1.55}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style>
+<style>
+.performanceSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:8px 0 10px}.summaryCard{background:#f8fafc;border:1px solid #e4e9ef;border-radius:11px;padding:9px 11px;min-height:48px}.summaryCard b{display:block;font-size:10px;color:#344054;margin-bottom:4px}.summaryCard span{font-size:11px;color:#101828;font-weight:700}.summaryCard.focus{border-color:#f1b7b7;background:#fff7f7}.summaryCard.good{border-color:#b9e2ca;background:#f5fcf7}.summaryCard.warn{border-color:#f2d39a;background:#fffaf0}@media(max-width:800px){.performanceSummary{grid-template-columns:1fr}}
+.dataGood{color:#087443;font-weight:900}.dataWarn{color:#a15c00;font-weight:900}.dataBad{color:#c62828;font-weight:900}.dataEmpty{color:#98a2b3}.uploadOk{color:#087443!important;font-weight:800}.uploadErr{color:#c62828!important;font-weight:800}.rangeTable td,.rangeTable th{white-space:nowrap}.tablebox{overflow:auto}.sourceTag{font-size:10px;color:#667085;margin-left:8px}
+.pbCompactTable{width:100%;min-width:0!important;table-layout:fixed}.pbCompactTable th,.pbCompactTable td{padding:7px 5px!important;font-size:9px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pbCompactTable th:nth-child(1){width:16%}.pbCompactTable th:nth-child(2){width:22%}.pbCompactTable th:nth-child(3),.pbCompactTable th:nth-child(4){width:12%}.pbCompactTable th:nth-child(5),.pbCompactTable th:nth-child(6){width:11%}.pbCompactTable th:nth-child(7){width:16%}
+.pbGroupTotal td{font-weight:800;background:#fff6e8;border-top:2px solid #e6b66a}.pbGrandTotal td{font-weight:900;background:#e8f5e9;border-top:3px solid #4caf50}.pbGroupTotal td:nth-child(2),.pbGrandTotal td:nth-child(2){font-weight:900}</style>
+</head>
+<body>
+<header class="top"><div class="brand">UNLIMITED • MADURAI 2 <span>RETAIL PERFORMANCE OS</span></div><div>🖥️ Manager Desktop</div></header>
+<div class="layout"><aside>
+<button class="nav active" onclick="show('store',this)">🏪 Store Performance<small>FTD • WTD • MTD • Full Month • YTD</small></button>
+<button class="nav" onclick="show('staff',this)">👥 Staff Performance<small>27 Staff • Rank • Gap • Focus</small></button>
+<button class="nav" onclick="show('team',this)">⚔️ Team Performance<small>Competition • Gap • Action</small></button>
+<button class="nav" onclick="show('fm',this)">👔 FM Performance<small>3 Floor Managers • Coaching</small></button>
+<button class="nav" onclick="show('division',this)">📊 Division Performance<small>Division • Review • Focus</small></button>
+<button class="nav" onclick="show('pb',this)">🏷️ PB Performance<small>Partner Brand • Review • Focus</small></button>
+<button class="nav" onclick="show('upload',this)">📥 Upload / Data Control<small>Manager only</small></button>
+</aside>
+<main class="main">
+<section id="store" class="view active">
+<div class="title">🏪 Store Performance</div>
+<div class="sub">FTD • WTD • MTD • FULL MONTH • YTD — ஒவ்வொன்றையும் click பண்ணி அந்த period performance பார்க்கலாம்.</div>
+
+<div class="periodTabs">
+<button class="periodBtn active" onclick="period('FTD',this)">FTD</button>
+<button class="periodBtn" onclick="period('WTD',this)">WTD</button>
+<button class="periodBtn" onclick="period('MTD',this)">MTD</button>
+<button class="periodBtn" onclick="period('FULL MONTH',this)">FULL MONTH</button>
+<button class="periodBtn" onclick="period('YTD',this)">YTD</button>
+</div>
+
+<div class="periodPanel" id="panel-FTD" style="display:block">
+<div class="dateLine">📊 <b>FTD PERFORMANCE</b> <span class="rangeTag">Source: NEW BI-HOURLY → AT3:AU17 ONLY</span></div>
+
+<div class="ftdHeroGrid">
+<div class="heroBox dateHero">
+<small>📅 DATE</small>
+<div class="heroValue">27-09-2026</div>
+<div class="heroSub good">Today's FTD • Current Day</div>
+</div>
+<div class="heroBox tarHero">
+<small>🎯 TAR / ACH / %</small>
+<div class="heroValue">3.21 / 1.16 / 36%</div>
+<div class="heroSub bad">Target gap — Immediate Sales Recovery</div>
+</div>
+<div class="heroBox balanceHero">
+<small>⚖️ BALANCE</small>
+<div class="heroValue">-2.05</div>
+<div class="heroSub bad">Gap to recover • High Priority</div>
+</div>
+</div>
+
+<div class="metricGrid ftdGrid">
+<div class="metricCard"><small>LAST WEEK ACH / G%</small><b>0.67</b><span class="good">73% Growth</span></div>
+<div class="metricCard"><small>LAST YEAR ACH / G%</small><b>1.08</b><span class="good">8% Growth</span></div>
+<div class="metricCard"><small>CE TAR / ACH</small><b>420 / 96</b><span class="bad">23%</span></div>
+<div class="metricCard"><small>BILLS TAR / ACH</small><b>168 / 60</b><span class="bad">36%</span></div>
+<div class="metricCard"><small>QTY TAR / ACH</small><b>756 / 258</b><span class="bad">34%</span></div>
+<div class="metricCard"><small>CON% TAR / ACH</small><b>40% / 63%</b><span class="good">156%</span></div>
+<div class="metricCard"><small>QPB TAR / ACH</small><b>4.5 / 4.4</b><span class="good">97%</span></div>
+<div class="metricCard"><small>ATV TAR / ACH</small><b>1913 / 1956</b><span class="good">102%</span></div>
+<div class="metricCard"><small>ASP TAR / ACH</small><b>425 / 450</b><span class="good">106%</span></div>
+<div class="metricCard"><small>SALES Gr%</small><b>8%</b><span class="good">Growth</span></div>
+<div class="metricCard"><small>NOB Gr%</small><b>107%</b><span class="good">Growth</span></div>
+<div class="metricCard"><small>DELTA%</small><b>-99%</b><span class="bad">Recovery Needed</span></div>
+</div>
+
+<div class="analysisBox"><b>🧠 FTD Manager Reading:</b> Sales, CE, Bills, Qty achievement low. ஆனால் Conversion, QPB, ATV, ASP strong. <b>Balance -2.05</b> என்பதால் Sales recovery + Bills + 3K contribution-க்கு immediate action தேவை.</div>
+</div>
+
+<div class="periodPanel" id="panel-WTD" style="display:none">
+<div class="dateLine">📅 <b>WTD PERFORMANCE</b> <span class="rangeTag">Source: NEW BI-HOURLY → BJ35:BK56</span></div>
+<div class="metricGrid ftdGrid">
+<div class="metricCard"><small>TAR / ACH / %</small><b>6.6 / 4.7 / 71%</b><span class="bad">Below Target</span></div>
+<div class="metricCard"><small>CW / LW / G%</small><b>4.7 / 5.8 / -19%</b><span class="bad">Growth Down</span></div>
+<div class="metricCard"><small>SPD / BACKLOG</small><b>0.94 / -1.9</b><span class="bad">Recovery Focus</span></div>
+<div class="metricCard"><small>3K DRIVE</small><b>Need Push</b><span class="warn">Immediate Focus</span></div>
+</div>
+<div class="analysisBox"><b>🧠 WTD Reading:</b> Target gap இருக்கு. Sales recovery + 3K Bills + hourly conversion-ல் immediate focus பண்ணினா WTD gap close பண்ண முடியும்.</div>
+</div>
+
+<div class="periodPanel" id="panel-MTD" style="display:none">
+<div class="dateLine">📅 <b>MTD</b> • Month-to-Date</div>
+<div class="metricGrid ftdGrid">
+<div class="metricCard"><small>TAR / ACH / %</small><b>34.2 / 34.83</b><span class="good">102% ACH</span></div>
+<div class="metricCard"><small>CM / LM / G%</small><b>34.8 / 51.7</b><span class="bad">-33%</span></div>
+<div class="metricCard"><small>LY / G%</small><b>36.5</b><span class="bad">-5%</span></div>
+<div class="metricCard"><small>SPD / BACKLOG</small><b>1.39 / 0.6</b><span class="good">On Track</span></div>
+</div>
+<div class="analysisBox"><b>🧠 MTD:</b> Target achieved. Strong performance maintain பண்ணி weak KPIs-ஐ improve பண்ணணும்.</div>
+</div>
+
+<div class="periodPanel" id="panel-FULL-MONTH" style="display:none">
+<div class="dateLine">📅 <b>FULL MONTH</b> • Full Month View</div>
+<div class="metricGrid ftdGrid">
+<div class="metricCard"><small>TAR / ACH / %</small><b>41.9 / 34.8</b><span class="bad">83% ACH</span></div>
+<div class="metricCard"><small>CM / LM / G%</small><b>34.8 / 63.3</b><span class="bad">-45%</span></div>
+<div class="metricCard"><small>LY / G%</small><b>56.1</b><span class="bad">-38%</span></div>
+<div class="metricCard"><small>SPD / BACKLOG</small><b>1.39 / 0.6</b><span class="warn">Focus</span></div>
+</div>
+<div class="analysisBox"><b>🧠 Full Month:</b> Remaining gap close செய்ய Sales + Bills + 3K Bills + high-value conversion focus.</div>
+</div>
+
+<div class="periodPanel" id="panel-YTD" style="display:none">
+<div class="dateLine">📅 <b>YTD</b> • Year-to-Date</div>
+<div class="metricGrid ftdGrid">
+<div class="metricCard"><small>TAR / ACH / %</small><b>310.0 / 323.7</b><span class="good">104% ACH</span></div>
+<div class="metricCard"><small>LY ACH / G%</small><b>182.4</b><span class="good">77%</span></div>
+<div class="metricCard"><small>SPD / BACKLOG</small><b>1.83 / 13.75</b><span class="warn">Monitor</span></div>
+<div class="metricCard"><small>STORE STATUS</small><b>Target Ahead</b><span class="good">104%</span></div>
+</div>
+<div class="analysisBox"><b>🧠 YTD:</b> Overall target ahead. Strong areas maintain பண்ணி current weak KPIs-ஐ recover பண்ணணும்.</div>
+</div>
+</section>
+
+<section id="staff" class="view">
+<div class="title">👥 Staff Performance</div>
+<div class="sub">27 Staff • Rank • Score • Gap • Strength • Detailed Next Focus — Tamil + English mix</div>
+<div class="tablebox"><table class="table"><tr><th>Rank</th><th>Staff</th><th>Team</th><th>Score</th><th>Gap Previous</th><th>💪 உங்க Strength</th><th>🎯 Next Focus / என்ன பண்ணணும்?</th></tr><tr><td>🥇 #1</td><td><b>Yuvan</b></td><td>Phoenix</td><td><b>82%</b></td><td>—</td><td class="staffStrength">Value + 3K Bills + high-value customer conversion strong. ATV ₹2K+ maintain பண்ணுறது strength.</td><td class="staffFocus">3K Bills இன்னும் consistent-ஆ push + Online Orders focus. High-value bills-ல் add-on selling மூலம் score maintain பண்ணலாம்.</td></tr><tr><td>🥈 #2</td><td><b>Lakshmi Priya</b></td><td>Eagle</td><td><b>79%</b></td><td>3%</td><td class="staffStrength">Bills + Digital engagement strong. Customer conversion நல்லா drive பண்ணுறீங்க.</td><td class="staffFocus">Digital Focus + 3K Bills. Online opportunity-ஐ bill conversion-ஆக மாற்றி #1 gap close பண்ணுங்க.</td></tr><tr><td>🥉 #3</td><td><b>Aginipandi</b></td><td>Phoenix</td><td><b>74%</b></td><td>5%</td><td class="staffStrength">Conversion + Value performance strong. Customer handling நல்ல contribution.</td><td class="staffFocus">ATV + 3K Bills focus. High-value customer-க்கு add-on / combo selling increase பண்ணுங்க.</td></tr><tr><td>#4</td><td><b>VJII</b></td><td>Dragon</td><td><b>64%</b></td><td>10%</td><td class="staffStrength">Bills + floor conversion நல்ல base.</td><td class="staffFocus">3K Bills + QPB focus. Multiple quantity selling push பண்ணுங்க.</td></tr><tr><td>#5</td><td><b>Dhanalakshmi</b></td><td>Eagle</td><td><b>61%</b></td><td>3%</td><td class="staffStrength">Digital + Bills contribution நல்லா இருக்கு.</td><td class="staffFocus">Digital Focus + 3K Bills. Every customer-க்கும் online / app opportunity check பண்ணுங்க.</td></tr><tr><td>#6</td><td><b>Ganathai</b></td><td>Eagle</td><td><b>60%</b></td><td>1%</td><td class="staffStrength">Bills + Digital contribution steady.</td><td class="staffFocus">3K Bills + Value. Higher bill size create பண்ண add-on selling focus.</td></tr><tr><td>#7</td><td><b>Lokesh</b></td><td>Eagle</td><td><b>59%</b></td><td>1%</td><td class="staffStrength">Bills performance stable.</td><td class="staffFocus">3K Bills + ATV. High-value product recommendation increase பண்ணுங்க.</td></tr><tr><td>#8</td><td><b>Mohammed</b></td><td>Eagle</td><td><b>57%</b></td><td>2%</td><td class="staffStrength">Conversion நல்ல base.</td><td class="staffFocus">3K Bills + Value. Customer need identify பண்ணி combo/add-on push.</td></tr><tr><td>#9</td><td><b>Monish</b></td><td>Eagle</td><td><b>56%</b></td><td>1%</td><td class="staffStrength">Bills contribution consistent.</td><td class="staffFocus">ATV + 3K Bills focus. Bill size improve பண்ணுங்க.</td></tr><tr><td>#10</td><td><b>Bala</b></td><td>Eagle</td><td><b>55%</b></td><td>1%</td><td class="staffStrength">Conversion base நல்லா இருக்கு.</td><td class="staffFocus">3K Bills + QPB. Multiple quantity selling focus.</td></tr><tr><td>#11</td><td><b>Kavitha</b></td><td>Phoenix</td><td><b>58%</b></td><td>-</td><td class="staffStrength">Digital + Conversion strength.</td><td class="staffFocus">ATV + 3K Bills. Strong digital engagement-ஐ sales conversion-ஆக மாற்றுங்க.</td></tr><tr><td>#12</td><td><b>Charumathi</b></td><td>Eagle</td><td><b>54%</b></td><td>1%</td><td class="staffStrength">Digital engagement நல்லா இருக்கு.</td><td class="staffFocus">Digital Focus + Bills. Digital lead-ஐ actual bill-ஆக convert பண்ணுங்க.</td></tr><tr><td>#13</td><td><b>Dhivakar</b></td><td>Phoenix</td><td><b>55%</b></td><td>-</td><td class="staffStrength">Bills contribution நல்ல base.</td><td class="staffFocus">3K Bills + ATV. High-value bill conversion focus.</td></tr><tr><td>#14</td><td><b>Pandi Meena</b></td><td>Phoenix</td><td><b>54%</b></td><td>1%</td><td class="staffStrength">Conversion base.</td><td class="staffFocus">3K Bills + Value. Add-on selling practice பண்ணுங்க.</td></tr><tr><td>#15</td><td><b>Sanjali</b></td><td>Phoenix</td><td><b>53%</b></td><td>1%</td><td class="staffStrength">Digital contribution.</td><td class="staffFocus">3K Bills + ATV + Digital Focus.</td></tr><tr><td>#16</td><td><b>RABIA</b></td><td>Phoenix</td><td><b>52%</b></td><td>1%</td><td class="staffStrength">Bills base.</td><td class="staffFocus">3K Bills + Online Orders. Follow-up improve பண்ணுங்க.</td></tr><tr><td>#17</td><td><b>Karthick</b></td><td>Phoenix</td><td><b>51%</b></td><td>1%</td><td class="staffStrength">Conversion base.</td><td class="staffFocus">3K Bills + QPB. Multiple-qty selling focus.</td></tr><tr><td>#18</td><td><b>Karthiga</b></td><td>Phoenix</td><td><b>49%</b></td><td>2%</td><td class="staffStrength">Digital base.</td><td class="staffFocus">3K Bills + Bills. Customer engagement → conversion focus.</td></tr><tr><td>#19</td><td><b>Twills</b></td><td>Dragon</td><td><b>48%</b></td><td>1%</td><td class="staffStrength">Bills base.</td><td class="staffFocus">3K Bills + Value. High-value product recommendation.</td></tr><tr><td>#20</td><td><b>Kala Muneeshwari</b></td><td>Dragon</td><td><b>47%</b></td><td>1%</td><td class="staffStrength">Conversion base.</td><td class="staffFocus">3K Bills + ATV. Add-on selling.</td></tr><tr><td>#21</td><td><b>Rajeshwari</b></td><td>Dragon</td><td><b>46%</b></td><td>1%</td><td class="staffStrength">Bills base.</td><td class="staffFocus">3K Bills + QPB. Multiple quantity.</td></tr><tr><td>#22</td><td><b>Azhagarasi</b></td><td>Dragon</td><td><b>45%</b></td><td>1%</td><td class="staffStrength">Digital base.</td><td class="staffFocus">3K Bills + Value. Digital Focus → bill conversion.</td></tr><tr><td>#23</td><td><b>Syed</b></td><td>Dragon</td><td><b>43%</b></td><td>2%</td><td class="staffStrength">Conversion base.</td><td class="staffFocus">Bills + 3K Bills. Customer handling improve.</td></tr><tr><td>#24</td><td><b>Bharani</b></td><td>Dragon</td><td><b>41%</b></td><td>2%</td><td class="staffStrength">Bills base.</td><td class="staffFocus">3K Bills + ATV. High-value bill focus.</td></tr><tr><td>#25</td><td><b>Mani</b></td><td>Dragon</td><td><b>39%</b></td><td>2%</td><td class="staffStrength">Conversion base.</td><td class="staffFocus">Sales + 3K Bills. Floor coaching தேவை.</td></tr><tr><td>#26</td><td><b>Shalini</b></td><td>Dragon</td><td><b>37%</b></td><td>2%</td><td class="staffStrength">Digital base.</td><td class="staffFocus">3K Bills + Bills + Digital Focus.</td></tr><tr><td>#27</td><td><b>TRIGGER</b></td><td>Eagle</td><td><b>0%</b></td><td>37%</td><td class="staffStrength">Not Enrolled / data gap.</td><td class="staffFocus">Enrollment complete பண்ணி, basic Bills + 3K + Digital Focus start பண்ணணும்.</td></tr></table></div>
+<div class="focus" style="margin-top:12px"><b>📌 Staff Reading:</b> Score மட்டும் இல்லாமல், ஒவ்வொரு staff-க்கும் current strength + next level gap + exact KPI focus கொடுக்கப்படும். “Digital” என்பதற்கு பதிலாக <b>Digital Focus</b> என்று action-oriented wording பயன்படுத்தப்படும்.</div>
+</section>
+
+<section id="team" class="view">
+<div class="title">⚔️ Team Performance</div>
+<div class="sub">Team position • Gap • Team-க்குள்ள individual performance</div>
+<div class="teams">
+<div class="card teamTop"><div class="rankBig">🥇 #1 POSITION</div><b>PHOENIX TEAM</b><div class="num good">76%</div><div class="strong">🏆 Top Team — first position.</div><div class="focus">Strong: Sales + 3K Bills + high-value contribution. #1 maintain பண்ண consistency முக்கியம்.</div>
+<div class="memberBox"><b>👍 Phoenix-ல் நல்லா perform பண்ணுறவர்கள்</b><br>Yuvan — 82% • Aginipandi — 74% • Kavitha — 58%</div>
+<div class="memberBox weak"><b>🎯 Phoenix-ல் Focus தேவை</b><br>Dhivakar — 55% • Pandi Meena — 54% • Sanjali — 53% • RABIA — 52% • Karthick — 51% • Karthiga — 49%</div></div>
+<div class="card"><div class="rankMedal">🥈 #2</div><b>EAGLE TEAM</b><div class="num">68%</div><div class="gapText">Phoenix-க்கு 8% gap</div><div class="strong">Strong: Bills + Digital</div><div class="focus">3K Bills + Online Orders focus பண்ணினா #1 gap குறையும்.</div>
+<div class="memberBox"><b>👍 Good contribution</b><br>Lakshmi Priya — 79% • Dhanalakshmi — 61% • Ganathai — 60% • Lokesh — 59%</div>
+<div class="memberBox weak"><b>🎯 Focus</b><br>Mohammed — 57% • Monish — 56% • Bala — 55% • Charumathi — 54% • TRIGGER — Enrollment + 3K</div></div>
+<div class="card"><div class="rankMedal">🥉 #3</div><b>DRAGON TEAM</b><div class="num">61%</div><div class="gapText">Eagle-க்கு 7% gap</div><div class="strong">Strong: Basic Conversion</div><div class="focus">Sales + Bills + 3K Bills முதலில் push பண்ணணும்.</div>
+<div class="memberBox"><b>👍 Better contribution</b><br>VJII — 64% • Twills — 48% • Kala Muneeshwari — 47%</div>
+<div class="memberBox weak"><b>🎯 Focus</b><br>Rajeshwari — 46% • Azhagarasi — 45% • Syed — 43% • Bharani — 41% • Mani — 39% • Shalini — 37%</div></div>
+</div></section>
+
+<section id="fm" class="view">
+<div class="title">👔 FM Performance</div>
+<div class="sub">Floor Manager-wise performance • Rank + Gap + Strength + Focus + Action Coaching</div>
+<div class="sectionIntro">ஒவ்வொரு FM-க்கும் தனி card. “என்ன strong?”, “என்ன gap?”, “எதை focus பண்ணணும்?”, “எப்படி next level போகலாம்?” — simple Tamil + English mix-ல்.</div>
+
+<div class="fmCards">
+<div class="fmCard first">
+<div class="fmTop"><div class="fmName">Vijay</div><div class="fmRank">🥇 #1 POSITION</div></div>
+<div class="fmScore good">#1 <small>Floor Manager Rank</small></div>
+<div class="fmLine"><b>💪 Strong Area</b>Sales + Conversion + Floor Control. Customer handling மற்றும் team follow-up நல்லா drive பண்ணுறீங்க.</div>
+<div class="fmLine"><b>📍 Current Gap</b>3K Bills contribution மற்றும் ATV-ஐ இன்னும் consistent-ஆ maintain பண்ணலாம்.</div>
+<div class="fmFocus"><b>🎯 Main Focus</b><br>
+<span class="focusTag">3K+ Bills</span><span class="focusTag">High Value Bills</span><span class="focusTag">QPB / ATV</span><br>
+ஒவ்வொரு hour-லும் 3K opportunity miss ஆகாமல் floor-ல direct follow-up பண்ணுங்க.</div>
+<div class="fmAction"><b>🚀 Action Coaching</b><br>Top customers-ஐ personally engage பண்ணி add-on / combo selling push பண்ணுங்க. Low-performing staff-க்கு immediate coaching. Closingக்கு முன் ATV + QPB gap review பண்ணுங்க.</div>
+</div>
+
+<div class="fmCard">
+<div class="fmTop"><div class="fmName">Manikandan</div><div class="fmRank">🥈 #2 POSITION</div></div>
+<div class="fmScore">#2 <small>Floor Manager Rank</small></div>
+<div class="fmLine"><b>💪 Strong Area</b>Bills + Team Coverage. Floor movement மற்றும் staff availability நல்லா control பண்ணுறீங்க.</div>
+<div class="fmLine"><b>📍 Current Gap</b>Vijay-க்கு compare பண்ணும்போது bill value + 3K contribution side-ல் gap இருக்கு.</div>
+<div class="fmFocus"><b>🎯 Main Focus</b><br>
+<span class="focusTag">3K Bills</span><span class="focusTag">Online Orders</span><span class="focusTag">ATV</span><br>
+3K opportunity-யை bill conversion-ஆக மாற்றுவதில் focus பண்ணுங்க.</div>
+<div class="fmAction"><b>🚀 Action Coaching</b><br>Every hour team-க்கு 3K mini-target கொடுங்க. Online order opportunity identify பண்ணி staff-க்கு follow-up assign பண்ணுங்க. High-value bills-ல் add-on selling coach பண்ணுங்க.</div>
+</div>
+
+<div class="fmCard">
+<div class="fmTop"><div class="fmName">Venkatesh</div><div class="fmRank">🥉 #3 POSITION</div></div>
+<div class="fmScore">#3 <small>Floor Manager Rank</small></div>
+<div class="fmLine"><b>💪 Strong Area</b>Floor Coverage + Staff Follow-up. Team-ஐ floor-ல் engage பண்ணுறது நல்லா இருக்கு.</div>
+<div class="fmLine"><b>📍 Current Gap</b>Sales + QPB + ATV side-ல் recovery தேவை. Top FM-க்கு reach ஆக consistency முக்கியம்.</div>
+<div class="fmFocus"><b>🎯 Main Focus</b><br>
+<span class="focusTag">Sales</span><span class="focusTag">QPB</span><span class="focusTag">3K Bills</span><br>
+Low-performing staff-ஐ identify பண்ணி individual target + follow-up கொடுக்கணும்.</div>
+<div class="fmAction"><b>🚀 Action Coaching</b><br>Multiple-quantity selling மற்றும் 3K conversion-ஐ coach பண்ணுங்க. Hourly sales gap check பண்ணி உடனே floor action எடுக்கவும். Closingக்கு முன் pending opportunities close பண்ணுங்க.</div>
+</div>
+</div>
+</section>
+
+<section id="division" class="view">
+<div class="title">📊 Division Performance</div>
+<div class="sub">Excel-ல sheet பெயர் சரியாக <b>Division</b> இருக்கணும். அதிலிருந்து <b>C4:J18</b> மட்டும் எடுத்துக்கப்படும். Division review மட்டும் இங்கே இருக்கும்.</div>
+
+<div class="divisionNote"><b>🔒 Source Lock:</b> Sheet <b>Division</b> → <b>C4:J18</b> மட்டும். Other cells ignore.</div>
+
+<div class="divisionLayout">
+<div class="divisionLeft">
+<div class="divBigBox" style="max-width:100%">
+<div class="divBoxHead"><span>👕 DIVISION PERFORMANCE</span><small>Source: C4:J18</small></div>
+<div class="divIntro">Left side-ல் division numbers compact-ஆ. Right side-ல் <b>Good • Improve • Focus • Backlog</b> analysis clear-ஆ இருக்கும். Scroll தேவையில்லை.</div>
+<div id="divisionSummary" class="performanceSummary"><div class="summaryCard"><b>📊 Overall ACH%</b><span>Excel upload செய்யவும்</span></div><div class="summaryCard"><b>🎯 Main Focus</b><span>Data வந்ததும் auto review</span></div><div class="summaryCard focus"><b>⚠️ Highest Backlog</b><span>—</span></div></div>
+<div class="tablebox noScroll">
+<table class="table compactDivisionTable" id="divisionTable">
+<tr><th>Division</th><th>TGT</th><th>ACT</th><th>ACH%</th><th>BACKLOG</th><th>ACT CONT%</th><th>REVIEW</th></tr>
+<tr id="divisionWaiting"><td colspan="7">Upload செய்ததும் <b>Division!C4:J18</b> data இங்கே வரும்</td></tr>
+</table>
+</div>
+</div>
+</div>
+<div class="divisionRight" id="divisionAnalysis">
+<div class="analysisPanel good"><h4>🟢 நல்லா பண்ணிட்டு இருக்கோம் / What's Going Well</h4><ul><li>Excel upload செய்ததும் best-performing divisions இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel warn"><h4>🟠 Improve / இன்னும் நல்லா பண்ண வேண்டியது</h4><ul><li>Medium ACH% divisions மற்றும் manageable gap இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel focus"><h4>🔴 Focus / முக்கிய கவனம்</h4><ul><li>Low ACH% + high backlog divisions இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel focus"><h4>⚠️ Highest Backlog / அதிக Gap</h4><ul><li>Data upload செய்ததும் highest backlog divisions தனியாக காட்டப்படும்.</li></ul></div>
+</div>
+</div>
+<div class="divisionNote" style="margin-top:12px"><b>தமிழ் + English Review:</b> Division-wise Good • Review • Focus status மற்றும் simple action coaching மட்டும் இங்கே காட்டப்படும்.</div>
+</section>
+
+<section id="pb" class="view">
+<div class="title">🏷️ PB Performance</div>
+<div class="sub">Excel-ல sheet பெயர் <b>Division</b>. அதிலிருந்து <b>S4:IJ24</b> மட்டும் எடுத்துக்கப்படும். PB / Partner Brand performance-ஐ Division Performance மாதிரி simple-ஆ பார்க்கலாம். CONT% மட்டும் Division sheet-ன் IJ4:IJ24-லிருந்து, PB brand row-க்கு நேராக match செய்து எடுக்கப்படும்.</div>
+
+<div class="divisionNote"><b>🔒 Source Lock:</b> Sheet <b>Division</b> → <b>S4:IJ24</b> மட்டும். Other cells ignore.</div>
+
+<div class="divisionLayout">
+<div class="divisionLeft">
+<div class="divBigBox" style="max-width:100%">
+<div class="divBoxHead pbHead"><span>🏷️ PB PERFORMANCE</span><small>Source: S4:IJ24</small></div>
+<div class="divIntro">Left side-ல் PB numbers compact-ஆ. Right side-ல் <b>Good • Improve • Focus • Gap</b> analysis clear-ஆ இருக்கும். Scroll தேவையில்லை.</div>
+<div id="pbSummary" class="performanceSummary"><div class="summaryCard"><b>🏷️ Overall ACH%</b><span>Excel upload செய்யவும்</span></div><div class="summaryCard"><b>🎯 Main Focus / முக்கிய கவனம்</b><span>Data வந்ததும் auto review</span></div><div class="summaryCard focus"><b>⚠️ Highest Gap / அதிக Gap</b><span>—</span></div></div>
+<div class="tablebox noScroll">
+<table class="table pbCompactTable" id="pbTable">
+<tr><th>DIVISION</th><th>BRAND</th><th>TGT</th><th>ACT</th><th>ACH%</th><th>CONT%</th><th>REVIEW</th></tr>
+<tr><td colspan="7">Excel upload செய்ததும் <b>Division!S4:IJ24</b> data இங்கே வரும்</td></tr>
+</table>
+</div>
+</div>
+</div>
+<div class="divisionRight" id="pbAnalysis">
+<div class="analysisPanel good"><h4>🟢 நல்லா பண்ணிட்டு இருக்கோம் / What's Going Well</h4><ul><li>Excel upload செய்ததும் strong PBs இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel warn"><h4>🟠 Improve / இன்னும் நல்லா பண்ண வேண்டியது</h4><ul><li>Medium ACH% PBs இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel focus"><h4>🔴 Focus / முக்கிய கவனம்</h4><ul><li>Low ACH% / no movement PBs இங்கே வரும்.</li></ul></div>
+<div class="analysisPanel focus"><h4>⚠️ Highest Gap / அதிக Gap</h4><ul><li>Target gap அதிகமாக உள்ள PBs இங்கே காட்டப்படும்.</li></ul></div>
+</div>
+</div>
+<div class="divisionNote" style="margin-top:12px"><b>தமிழ் + English Review:</b> PB-wise Good • Improve • Focus • Gap மற்றும் simple action coaching இங்கே காட்டப்படும்.</div>
+</section>
+
+<section id="upload" class="view"><div class="title">📥 Upload / Data Control</div><div class="sub">Manager desktop-ல் மட்டும் Excel upload/control.</div>
+<div class="upload"><h3>Excel Upload</h3><p style="font-size:12px;color:#667085">Locked source ranges மட்டும் read செய்யப்படும். <b>Division</b> sheet name exact-ஆ match ஆக வேண்டும்.</p><input id="file" type="file" accept=".xlsx,.xlsm"><div id="msg">File select பண்ணுங்க.</div></div>
+<div class="teams" style="margin-top:14px">
+<div class="card"><b>NEW DRIVE</b><div class="num">B1:AW53</div><div>New Drive selected range</div></div>
+<div class="card"><b>NEW BI-HOURLY</b><div class="num">AT3:AU17</div><div>BJ35:BK56 • WTD / MTD / Full Month / YTD</div></div>
+<div class="card"><b>DIVISION</b><div class="num">Sheet: Division</div><div>C4:J18 • PB: S4:IJ24</div></div>
+</div></section>
+</main></div>
+
+<div class="mobileArea"><div class="phone"><div class="mhead"><div style="font-size:10px;opacity:.7">UNLIMITED • MADURAI 2</div><div style="font-size:21px;font-weight:900">Staff Performance</div><div style="font-size:10px;opacity:.65">Mobile View • Live</div></div>
+<div class="mhero"><div style="font-size:11px;color:#667085">வணக்கம் 👋</div><div class="mname">Yuvan Sankar Raja</div><div style="font-size:10px;color:#2563eb">Phoenix Team</div><div style="display:flex;justify-content:space-between;margin-top:13px"><div><small>Your Rank</small><div class="mscore">#1</div></div><div style="text-align:right"><small>Score</small><div class="mscore good">82%</div></div></div><div class="strong">🎯 <b>Next Level</b><br>உங்க position #1. 3K + high-value bills maintain பண்ணுங்க.</div></div>
+<div class="mgrid"><div class="mcard"><small>Sales</small><br><b>₹42K</b></div><div class="mcard"><small>Bills</small><br><b>38</b></div><div class="mcard"><small>3K Bills</small><br><b>11</b></div><div class="mcard"><small>ATV</small><br><b>₹2,050</b></div></div>
+<div style="padding:0 12px 12px"><b>⚔️ Team Battle</b><div class="mrow"><b>🥇 Phoenix</b><span class="good">76%</span></div><div class="mrow"><b>🥈 Eagle</b><span>68%</span></div><div class="mrow"><b>🥉 Dragon</b><span>61%</span></div><div class="mcard" style="margin-top:10px"><b>🚀 உங்க Focus</b><div style="font-size:10px;color:#667085;margin-top:5px">உங்க strength maintain பண்ணி 3K Bills + Online Orders-ஐ இன்னும் push பண்ணுங்க.</div></div></div>
+<div class="mbottom"><div><b>⌂</b>Home</div><div><b>🏆</b>Rank</div><div><b>⚔️</b>Team</div><div><b>📊</b>KPI</div></div></div></div>
+
+<script>
+// Lightweight XLSX reader: robust ZIP/XLSX parser, no external library / no internet required.
+function colToNum(c){let n=0;for(const ch of c)n=n*26+ch.charCodeAt(0)-64;return n}
+function numToCol(n){let s='';while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s}
+function parseRange(range){const m=/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i.exec(range);if(!m)throw Error('Bad range '+range);return{c1:colToNum(m[1].toUpperCase()),r1:+m[2],c2:colToNum(m[3].toUpperCase()),r2:+m[4]}}
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function pctNum(v){const n=parseFloat(String(v).replace('%',''));return Number.isFinite(n)?n:null}
+function reviewForRow(vals){const nums=vals.map(x=>pctNum(x));const ach=nums.find((n,i)=>i>0&&n!==null&&n>=0&&n<=500);if(ach===null||ach===undefined)return['WAITING','dataEmpty'];if(ach>=100)return['GOOD','dataGood'];if(ach>=70)return['REVIEW','dataWarn'];return['FOCUS','dataBad']}
+function normZipName(n){return String(n||'').replace(/^\.\//,'').replace(/^\//,'')}
+async function readZipEntries(buf){
+  const a=new Uint8Array(buf),dv=new DataView(buf);let e=-1;
+  for(let i=a.length-22;i>=Math.max(0,a.length-65558);i--){if(dv.getUint32(i,true)===0x06054b50){e=i;break}}
+  if(e<0)throw Error('Not a valid XLSX/ZIP file');
+  const cdSize=dv.getUint32(e+12,true),cdOff=dv.getUint32(e+16,true);const out={};let p=cdOff;
+  while(p<cdOff+cdSize){
+    if(dv.getUint32(p,true)!==0x02014b50)break;
+    const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),usize=dv.getUint32(p+24,true),nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),localOff=dv.getUint32(p+42,true);
+    const name=normZipName(new TextDecoder().decode(a.slice(p+46,p+46+nl)));
+    if(localOff>=a.length)throw Error('Invalid ZIP entry offset for '+name);
+    const lp=localOff;if(dv.getUint32(lp,true)!==0x04034b50)throw Error('Invalid ZIP local header for '+name);
+    const lnl=dv.getUint16(lp+26,true),lel=dv.getUint16(lp+28,true);const dataStart=lp+30+lnl+lel;
+    const data=a.slice(dataStart,dataStart+csize);
+    out[name]={method,csize,usize,data};p+=46+nl+el+cl;
+  }
+  return out;
+}
+async function unzipText(ent,label){
+  if(!ent)throw Error('Missing XLSX entry: '+label);
+  if(ent.method===0)return new TextDecoder().decode(ent.data);
+  if(ent.method!==8)throw Error('Unsupported ZIP compression method '+ent.method+' for '+label);
+  if(typeof DecompressionStream==='undefined')throw Error('This Chrome does not support DecompressionStream. Please use latest Chrome/Edge.');
+  try{const ds=new DecompressionStream('deflate-raw');const ab=await new Response(new Blob([ent.data]).stream().pipeThrough(ds)).arrayBuffer();return new TextDecoder().decode(ab)}catch(err){throw Error('Cannot decompress '+label+': '+err.message)}
+}
+function xmlDoc(t){const d=new DOMParser().parseFromString(t,'application/xml');if(d.getElementsByTagName('parsererror').length)throw Error('Invalid XML in XLSX');return d}
+function lname(el){return el.localName||el.nodeName.split(':').pop()}
+function child(el,name){return Array.from(el.children||[]).find(x=>lname(x)===name)}
+function relId(sh){return sh.getAttribute('r:id')||sh.getAttribute('id')||sh.getAttribute('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id')}
+function resolveTarget(base,target){let t=String(target||'').replace(/\\/g,'/');if(t.startsWith('/'))return normZipName(t);let parts=base.split('/');parts.pop();for(const part of t.split('/')){if(!part||part==='.')continue;if(part==='..')parts.pop();else parts.push(part)}return normZipName(parts.join('/'))}
+async function loadXlsx(file){
+  const buf=await file.arrayBuffer();
+  const z=await readZipEntries(buf);
+  const wbPath=z['xl/workbook.xml']?'xl/workbook.xml':Object.keys(z).find(k=>/(^|\/)workbook\.xml$/i.test(k));
+  if(!wbPath)throw Error('workbook.xml not found. Please select a valid .xlsx file.');
+  const relPath=Object.keys(z).find(k=>/(^|\/)workbook\.xml\.rels$/i.test(k))||'xl/_rels/workbook.xml.rels';
+  const wb=xmlDoc(await unzipText(z[wbPath],wbPath));
+  const relDoc=xmlDoc(await unzipText(z[relPath],relPath));
+  const rels={};for(const r of Array.from(relDoc.getElementsByTagName('*')).filter(x=>lname(x)==='Relationship'))rels[r.getAttribute('Id')]=r.getAttribute('Target');
+  const sheets=[];const sheetsEl=Array.from(wb.getElementsByTagName('*')).find(x=>lname(x)==='sheets');
+  for(const sh of Array.from(sheetsEl?.children||[])){if(lname(sh)!=='sheet')continue;const target=rels[relId(sh)];if(!target)throw Error('No relationship found for sheet '+sh.getAttribute('name'));sheets.push({name:sh.getAttribute('name'),path:resolveTarget(wbPath,target)})}
+  const shared=[];const sharedPath=Object.keys(z).find(k=>/sharedStrings\.xml$/i.test(k));
+  if(sharedPath){const sd=xmlDoc(await unzipText(z[sharedPath],sharedPath));for(const si of Array.from(sd.getElementsByTagName('*')).filter(x=>lname(x)==='si'))shared.push(Array.from(si.getElementsByTagName('*')).filter(x=>lname(x)==='t').map(x=>x.textContent).join(''))}
+  const cache={};
+  async function sheet(name){
+    const sh=sheets.find(x=>x.name.trim()===name.trim());if(!sh)throw Error('Sheet not found: '+name+' | Available: '+sheets.map(x=>x.name).join(', '));
+    if(cache[name])return cache[name];
+    const entry=z[sh.path];if(!entry)throw Error('Worksheet XML not found for '+name+' ('+sh.path+')');
+    const doc=xmlDoc(await unzipText(entry,sh.path));const map={};
+    for(const c of Array.from(doc.getElementsByTagName('*')).filter(x=>lname(x)==='c')){
+      const ref=c.getAttribute('r');if(!ref)continue;const t=c.getAttribute('t');const v=child(c,'v');const is=child(c,'is');let val='';
+      if(t==='s'&&v)val=shared[+v.textContent]??'';else if(t==='inlineStr'&&is)val=Array.from(is.getElementsByTagName('*')).filter(x=>lname(x)==='t').map(x=>x.textContent).join('');else if(t==='b'&&v)val=v.textContent==='1'?'TRUE':'FALSE';else if(v)val=v.textContent;else if(is)val=Array.from(is.getElementsByTagName('*')).filter(x=>lname(x)==='t').map(x=>x.textContent).join('');
+      map[ref]=val;
+    }
+    cache[name]=map;return map;
+  }
+  return{sheets:sheets.map(x=>x.name),sheet};
+}
+function numVal(v){
+  if(v===null||v===undefined||v==='') return null;
+  const n=Number(String(v).replace(/,/g,''));
+  return Number.isFinite(n)?n:null;
+}
+function fmtNum(v){const n=numVal(v);return n===null?String(v??''):Math.round(n).toLocaleString('en-IN');}
+function fmtPct(v){const n=numVal(v);if(n===null)return String(v??'');return (Math.abs(n)<=1.5?n*100:n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';}
+function cleanHeader(v){return String(v??'').trim().replace(/\s+/g,' ').toUpperCase();}
+function reviewForDivision(vals){
+  const ach=numVal(vals[3]); const backlog=numVal(vals[5]);
+  const pct=ach===null?null:(Math.abs(ach)<=1.5?ach*100:ach);
+  if(pct!==null && pct>=100) return ['GOOD','dataGood'];
+  if(backlog!==null && backlog>0) return ['FOCUS','dataBad'];
+  if(pct!==null && pct<80) return ['FOCUS','dataBad'];
+  return ['REVIEW','dataWarn'];
+}
+function formatDivisionCell(v,i){
+  if(i===1||i===2||i===4||i===5||i===7)return fmtNum(v);
+  if(i===3||i===6)return fmtPct(v);
+  return String(v??'');
+}
+async function readRows(reader,sheetName,range){
+  const map=await reader.sheet(sheetName),r=parseRange(range),rows=[];
+  for(let row=r.r1;row<=r.r2;row++){
+    const vals=[];let nonEmpty=false;
+    for(let col=r.c1;col<=r.c2;col++){const v=map[numToCol(col)+row]??'';vals.push(v);if(String(v).trim()!=='')nonEmpty=true}
+    if(nonEmpty)rows.push(vals);
+  }
+  return rows;
+}
+async function renderDivision(reader){
+  const rows=await readRows(reader,'Division','C4:J18');
+  const table=document.getElementById('divisionTable');
+  const data=rows.slice(1);
+  let html='<tr><th>Division</th><th>TGT</th><th>ACT</th><th>ACH%</th><th>BACKLOG</th><th>CONT%</th><th>REVIEW</th></tr>';
+  let totalT=0,totalA=0,totalBack=0,best=[],improve=[],focus=[],backlogList=[];
+  for(const vals of data){
+    const rowName=String(vals[0]??'').trim();
+    if(!rowName || rowName.toUpperCase()==='TOTAL') continue;
+    const tgt=numVal(vals[1]), act=numVal(vals[2]), achRaw=numVal(vals[3]), back=numVal(vals[5]), cont=numVal(vals[7]);
+    const pct=achRaw===null?((tgt!==null&&tgt!==0&&act!==null)?act/tgt*100:null):(Math.abs(achRaw)<=1.5?achRaw*100:achRaw);
+    if(tgt!==null)totalT+=tgt; if(act!==null)totalA+=act; if(back!==null)totalBack+=back;
+    if(back!==null)backlogList.push({name:rowName,back});
+    let label='REVIEW',cls='dataWarn';
+    if(pct!==null&&pct>=100){label='GOOD';cls='dataGood';best.push({name:rowName,pct,back})}
+    else if(pct!==null&&pct<80){label='FOCUS';cls='dataBad';focus.push({name:rowName,pct,back})}
+    else {improve.push({name:rowName,pct,back})}
+    html+='<tr><td title="'+esc(rowName)+'"><b>'+esc(rowName)+'</b></td><td>'+esc(fmtNum(tgt))+'</td><td>'+esc(fmtNum(act))+'</td><td>'+esc(fmtPct(pct))+'</td><td>'+esc(fmtNum(back))+'</td><td>'+esc(fmtPct(cont))+'</td><td class="'+cls+'"><b>'+label+'</b></td></tr>';
+  }
+  if(!data.length) html+='<tr><td colspan="7" class="dataEmpty">No data in Division!C4:J18</td></tr>';
+  table.innerHTML=html;
+  backlogList.sort((a,b)=>(a.back??0)-(b.back??0));
+  best.sort((a,b)=>b.pct-a.pct); improve.sort((a,b)=>b.pct-a.pct); focus.sort((a,b)=>a.pct-b.pct);
+  const overall=totalT?totalA/totalT*100:null;
+  const summary=document.getElementById('divisionSummary');
+  if(summary){
+    const highest=backlogList.slice(0,3).map(x=>x.name+' '+fmtNum(x.back)).join(' • ');
+    summary.innerHTML=
+      '<div class="summaryCard '+(overall!==null&&overall>=100?'good':overall!==null&&overall<80?'focus':'warn')+'"><b>📊 Overall ACH%</b><span>'+(overall===null?'—':fmtPct(overall))+' • TGT '+fmtNum(totalT)+' • ACT '+fmtNum(totalA)+'</span></div>'+ 
+      '<div class="summaryCard"><b>🎯 Main Focus / முக்கிய கவனம்</b><span>'+(focus[0]?esc(focus[0].name)+' — '+fmtPct(focus[0].pct):'Gap review & conversion push')+'</span></div>'+ 
+      '<div class="summaryCard focus"><b>⚠️ Highest Backlog / அதிக Gap</b><span>'+esc(highest||'—')+'</span></div>';
+  }
+  const analysis=document.getElementById('divisionAnalysis');
+  if(analysis){
+    const goodText=best.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH. Maintain & push.</li>').join('') || '<li>100%+ ACH divisions இல்லை; current performers-ஐ next level-க்கு push பண்ணுங்க.</li>';
+    const improveText=improve.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH. Sales conversion improve பண்ணுங்க.</li>').join('') || '<li>Medium performance divisions இல்லை.</li>';
+    const focusText=focus.slice(0,10).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH; Backlog '+fmtNum(x.back)+'. Immediate sales + conversion focus.</li>').join('') || '<li>Low ACH divisions இல்லை.</li>';
+    const backText=backlogList.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtNum(x.back)+' backlog. Gap recovery action தேவை.</li>').join('') || '<li>Backlog data இல்லை.</li>';
+    analysis.innerHTML=
+      '<div class="analysisPanel good"><h4>🟢 நல்லா பண்ணிட்டு இருக்கோம் / What’s Going Well</h4><ul>'+goodText+'</ul></div>'+ 
+      '<div class="analysisPanel warn"><h4>🟠 Improve / இன்னும் நல்லா பண்ண வேண்டியது</h4><ul>'+improveText+'</ul></div>'+ 
+      '<div class="analysisPanel focus"><h4>🔴 Focus / முக்கிய கவனம்</h4><ul>'+focusText+'</ul></div>'+ 
+      '<div class="analysisPanel focus"><h4>⚠️ Backlog / அதிக Gap</h4><ul>'+backText+'</ul></div>';
+  }
+}
+function fmtWhole(v){const n=numVal(v); return n===null?'—':Math.round(n).toLocaleString('en-IN');}
+function findHeaderIndex(headers,patterns){return headers.findIndex(h=>patterns.some(p=>h.includes(p)));}
+async function renderPB(reader){
+  const rows=await readRows(reader,'Division','S4:IJ24');
+  const contRows=await readRows(reader,'Division','Z4:Z24');
+  const table=document.getElementById('pbTable');
+  if(!table)return;
+  if(!rows.length){table.innerHTML='<tr><td class="dataEmpty">No data in Division!S4:IJ24</td></tr>';return;}
+  const rawHeaders=rows[0].map(cleanHeader); const data=rows.slice(1);
+  const di=findHeaderIndex(rawHeaders,['DIVISION']);
+  const bi=findHeaderIndex(rawHeaders,['BRAND','PARTNER']);
+  const ti=findHeaderIndex(rawHeaders,['TGT','TARGET']);
+  const ai=findHeaderIndex(rawHeaders,['ACT','ACTUAL']);
+  const hi=findHeaderIndex(rawHeaders,['ACH%','ACH','ACHIEV']);
+  // ACT CONT% for PB is the ACT CONT% column shown in the PB block: column Z.
+  // Read Z4:Z24 separately and match strictly by Excel row: S4 row -> Z4, S5 -> Z5 ... S24 -> Z24.
+  const contData = contRows.slice(1).map(r=>r && r.length ? r[0] : '');
+  let html='<tr><th>DIVISION</th><th>BRAND</th><th>TGT</th><th>ACT</th><th>ACH%</th><th>ACT CONT%</th><th>REVIEW</th></tr>';
+  let active=0,totalT=0,totalA=0,strong=[],improve=[],focus=[],gapList=[];
+  let currentDivision='';
+  let grandT=0,grandA=0,grandCont=0;
+  for(let i=0;i<data.length;i++){
+    const vals=data[i];
+    if(!vals || !vals.some(v=>String(v).trim()!==''))continue;
+    const excelRow=5+i;
+    const brand=String(vals[bi>=0?bi:1]??'').trim();
+    const division=String(vals[di>=0?di:0]??'').trim();
+    if(!brand && !division)continue;
+    const tgt=numVal(vals[ti>=0?ti:2]), act=numVal(vals[ai>=0?ai:3]);
+    const achRaw=numVal(vals[hi>=0?hi:4]);
+    const pct=achRaw===null?((tgt!==null&&tgt!==0&&act!==null)?act/tgt*100:null):(Math.abs(achRaw)<=1.5?achRaw*100:achRaw);
+    // Strict row match to J column.
+    const contRaw=numVal(contData[i]);
+    const contPct=contRaw===null?null:(Math.abs(contRaw)<=1.5?contRaw*100:contRaw);
+    const isTotal=/\btotal\b/i.test(brand) || /\ball\s*pb\b/i.test(brand) || /\btotal\b/i.test(division);
+    const isAllTotal=/\b(all\s*pb|all\s*partner\s*brand|grand\s*total|total\s*pb)\b/i.test((brand+' '+division));
+    if((tgt!==null&&tgt!==0)||(act!==null&&act!==0)||(pct!==null))active++;
+    if(!isTotal){ if(tgt!==null)totalT+=tgt; if(act!==null)totalA+=act; }
+    if(tgt!==null)grandT+=tgt; if(act!==null)grandA+=act;
+    if(contPct!==null && !isTotal) grandCont+=contPct;
+    const gap=(tgt!==null&&act!==null)?act-tgt:null;
+    if(gap!==null && !isTotal)gapList.push({name:brand||division,gap,pct});
+    let label='REVIEW',cls='dataWarn';
+    if(pct!==null&&pct>=100){label='GOOD';cls='dataGood';strong.push({name:brand||division,pct,cont:contPct});}
+    else if(pct!==null&&pct<80){label='FOCUS';cls='dataBad';focus.push({name:brand||division,pct,gap,cont:contPct});}
+    else {improve.push({name:brand||division,pct,gap,cont:contPct});}
+    const rowClass=isAllTotal?'pbGrandTotal':(isTotal?'pbGroupTotal':'');
+    const displayDivision=division || currentDivision;
+    if(division)currentDivision=division;
+    html+='<tr class="'+rowClass+'"><td title="'+esc(displayDivision)+'">'+esc(displayDivision)+'</td><td title="'+esc(brand)+'"><b>'+esc(brand)+'</b></td><td>'+esc(fmtWhole(tgt))+'</td><td>'+esc(fmtWhole(act))+'</td><td>'+esc(fmtPct(pct))+'</td><td>'+esc(fmtPct(contPct))+'</td><td class="'+cls+'"><b>'+label+'</b></td></tr>';
+  }
+  // Add a calculated All PB Total only if the source range does not already contain one.
+  const hasGrand=/all\s*pb|grand\s*total|total\s*pb/i.test(data.map(v=>String(v[bi>=0?bi:1]??'')).join(' '));
+  if(!hasGrand && (totalT!==0 || totalA!==0)){
+    const allPct=totalT?totalA/totalT*100:null;
+    html+='<tr class="pbGrandTotal"><td></td><td><b>ALL PB TOTAL</b></td><td>'+fmtWhole(totalT)+'</td><td>'+fmtWhole(totalA)+'</td><td>'+fmtPct(allPct)+'</td><td>'+fmtPct(grandCont)+'</td><td></td></tr>';
+  }
+  if(active===0)html+='<tr><td colspan="7" class="dataEmpty">PB data read ஆனது, ஆனால் usable Target / Actual / ACH values கிடைக்கவில்லை.</td></tr>';
+  table.innerHTML=html;
+  strong.sort((a,b)=>b.pct-a.pct); improve.sort((a,b)=>b.pct-a.pct); focus.sort((a,b)=>a.pct-b.pct); gapList.sort((a,b)=>a.gap-b.gap);
+  const overall=totalT?totalA/totalT*100:null;
+  const summary=document.getElementById('pbSummary');
+  if(summary){
+    const highest=gapList.slice(0,4).map(x=>x.name+' '+fmtWhole(x.gap)).join(' • ');
+    summary.innerHTML=
+      '<div class="summaryCard '+(overall!==null&&overall>=100?'good':overall!==null&&overall<80?'focus':'warn')+'"><b>🏷️ Overall ACH%</b><span>'+(overall===null?'—':fmtPct(overall))+' • TGT '+fmtWhole(totalT)+' • ACT '+fmtWhole(totalA)+'</span></div>'+ 
+      '<div class="summaryCard"><b>🎯 Main Focus / முக்கிய கவனம்</b><span>'+(focus[0]?esc(focus[0].name)+' — '+fmtPct(focus[0].pct):'Gap review & PB push')+'</span></div>'+ 
+      '<div class="summaryCard focus"><b>⚠️ Highest Gap / அதிக Gap</b><span>'+esc(highest||'—')+'</span></div>';
+  }
+  const analysis=document.getElementById('pbAnalysis');
+  if(analysis){
+    const goodText=strong.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH. Strong movement; maintain & push.</li>').join('') || '<li>100%+ ACH PB இல்லை; current PBs-ஐ next level-க்கு push பண்ணுங்க.</li>';
+    const improveText=improve.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH. Sales conversion + visibility improve பண்ணுங்க.</li>').join('') || '<li>Medium performance PB இல்லை.</li>';
+    const focusText=focus.slice(0,10).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtPct(x.pct)+' ACH; Gap '+fmtWhole(x.gap)+'. Immediate brand push + offer explanation focus.</li>').join('') || '<li>Low ACH PB இல்லை.</li>';
+    const gapText=gapList.slice(0,8).map(x=>'<li><b>'+esc(x.name)+'</b> — '+fmtWhole(x.gap)+' gap. Target recovery action தேவை.</li>').join('') || '<li>Gap data இல்லை.</li>';
+    analysis.innerHTML=
+      '<div class="analysisPanel good"><h4>🟢 நல்லா பண்ணிட்டு இருக்கோம் / What’s Going Well</h4><ul>'+goodText+'</ul></div>'+ 
+      '<div class="analysisPanel warn"><h4>🟠 Improve / இன்னும் நல்லா பண்ண வேண்டியது</h4><ul>'+improveText+'</ul></div>'+ 
+      '<div class="analysisPanel focus"><h4>🔴 Focus / முக்கிய கவனம்</h4><ul>'+focusText+'</ul></div>'+ 
+      '<div class="analysisPanel focus"><h4>⚠️ Highest Gap / அதிக Gap</h4><ul>'+gapText+'</ul></div>';
+  }
+}
+async function handleUpload(file){
+  const msg=document.getElementById('msg');msg.className='';msg.textContent='Reading Excel…';
+  try{
+    if(!/\.(xlsx|xlsm)$/i.test(file.name))throw Error('Please select the .xlsx / .xlsm Excel file.');
+    const reader=await loadXlsx(file);
+    const div=reader.sheets.find(x=>x.trim().toLowerCase()==='division');
+    if(!div)throw Error('Sheet "Division" கிடைக்கவில்லை. Excel sheet name exact-ஆ Division இருக்கணும். Found: '+reader.sheets.join(', '));
+    await renderDivision(reader); await renderPB(reader);
+    msg.className='uploadOk';msg.innerHTML='✅ Excel loaded successfully • Sheet: <b>Division</b> • C4:J18 + S4:IJ24 + Z4:Z24 read complete';
+  }catch(err){console.error(err);msg.className='uploadErr';msg.textContent='❌ Import Error: '+err.message}
+}
+function show(id,b){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}
+function period(key,b){document.querySelectorAll('.periodBtn').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');document.querySelectorAll('.periodPanel').forEach(x=>x.style.display='none');const p=document.getElementById('panel-'+key.replace(/ /g,'-'));if(p)p.style.display='block'}
+document.addEventListener('DOMContentLoaded',()=>{period('FTD',document.querySelector('.periodBtn.active'));document.getElementById('file').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)handleUpload(f);else document.getElementById('msg').textContent='File select பண்ணுங்க.'})});
+</script>
+<div id="pdcGate" aria-label="PDC 2026 Login">
+  <div class="pdcFirework fw1">✦</div><div class="pdcFirework fw2">✦</div><div class="pdcFirework fw3">✦</div>
+  <div class="pdcFirework fw4">✧</div><div class="pdcFirework fw5">✧</div>
+  <div class="pdcCard">
+    <div class="pdcBrand"><span class="brandUnlimited">UNLIMITED</span><span class="brandMadurai">MADURAI 2</span></div>
+    <div class="pdcTitle">PDC 2026</div>
+    <div class="pdcSub">🪔 Deepavali Special • Madurai 2</div>
+    <div class="pdcFest">🧨 ✨ 🪔 ✨ 🧨</div>
+    <div class="pdcCrackerWrap" id="pdcCrackerWrap" title="Touch the fuse / திரியை touch பண்ணுங்க">
+      <div class="pdcCracker" id="pdcCracker">
+        <div class="pdcCrackerBody"><div class="cracker3d"><div class="crackerTop"></div><div class="crackerLabel">PDC<br><b>2026</b></div><div class="crackerStripe"></div><div class="crackerBottom"></div></div></div>
+        <div class="pdcFuse"></div><div class="pdcSparkTip"></div>
+        <div class="pdcBurst b1">✦</div><div class="pdcBurst b2">✦</div><div class="pdcBurst b3">✧</div><div class="pdcBurst b4">✦</div><div class="pdcBurst b5">✧</div>
+      </div>
+    </div>
+    <div class="pdcHint" id="pdcHint">🧨 திரியை touch பண்ணுங்க • Light → Spark → Celebration!</div>
+    <div class="pdcLogin" id="pdcLogin">
+      <label class="pdcLabel">Username</label>
+      <input class="pdcInput" id="pdcUser" autocomplete="username" placeholder="Enter username">
+      <label class="pdcLabel">Password</label>
+      <input class="pdcInput" id="pdcPass" type="password" autocomplete="current-password" placeholder="Enter password">
+      <button class="pdcBtn" id="pdcBtn">🔓 Open Manager Dashboard</button>
+      <div class="pdcError" id="pdcError">Username / Password தவறு.</div>
+      <div class="pdcWelcome" id="pdcWelcome">✅ Login successful • Welcome to Madurai 2</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+ const gate=document.getElementById('pdcGate'), cracker=document.getElementById('pdcCracker'), wrap=document.getElementById('pdcCrackerWrap'), login=document.getElementById('pdcLogin'), hint=document.getElementById('pdcHint'), btn=document.getElementById('pdcBtn'), user=document.getElementById('pdcUser'), pass=document.getElementById('pdcPass'), err=document.getElementById('pdcError'), welcome=document.getElementById('pdcWelcome');
+ if(!gate)return;
+ let ignited=false;
+ function ignite(){
+   if(ignited)return; ignited=true;
+   cracker.classList.add('ignited');
+   hint.textContent='✨ Spark on… PDC 2026 opening!';
+   setTimeout(()=>{cracker.classList.add('burst');hint.textContent='🎆 Happy Deepavali • Username & Password enter பண்ணுங்க';login.classList.add('show');setTimeout(()=>user.focus(),180)},850);
+ }
+ wrap.addEventListener('click',ignite); wrap.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')ignite()}); wrap.tabIndex=0;
+ function openDash(){
+   if(user.value.trim().toLowerCase()==='madurai 2' && pass.value==='123'){
+     welcome.classList.add('show'); err.classList.remove('show');
+     setTimeout(()=>{gate.style.display='none';document.body.style.overflow='';},220);
+   }else{err.classList.add('show');welcome.classList.remove('show');}
+ }
+ btn.addEventListener('click',openDash); [user,pass].forEach(x=>x.addEventListener('keydown',e=>{if(e.key==='Enter')openDash()}));
+ document.body.style.overflow='hidden';
+})();
+</script>
+<style>
+/* V31: festive PDC 2026 login — dashboard content unchanged */
+#pdcGate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 40%,#4b2400 0,#1b0d03 40%,#050505 100%);font-family:Arial,"Noto Sans Tamil",sans-serif;color:#fff}
+.pdcCard{position:relative;width:min(500px,94vw);padding:30px 30px 25px;border:1px solid #a87824;border-radius:26px;background:linear-gradient(180deg,#291806f5,#0d0b09fa);box-shadow:0 28px 80px #000c,0 0 55px #ffb30025;text-align:center}
+.pdcBrand{font-size:34px;line-height:1.05;font-weight:950;letter-spacing:1px;color:#fff;text-shadow:0 2px 18px #ffb30055}
+.pdcTitle{font-size:30px;font-weight:950;margin-top:9px;letter-spacing:1px;color:#ffd76a;text-shadow:0 0 20px #ff9d00aa}.pdcSub{margin-top:5px;font-size:13px;color:#ffe8b0}.pdcFest{margin:9px 0 0;font-size:25px;letter-spacing:9px}
+.pdcFirework{position:absolute;font-size:34px;color:#ffd86b;text-shadow:0 0 18px #ffb300;animation:pdcFire 1.8s infinite alternate;pointer-events:none}.fw1{left:9%;top:17%}.fw2{right:10%;top:13%;animation-delay:.3s}.fw3{left:16%;bottom:15%;animation-delay:.7s}.fw4{right:17%;bottom:20%;animation-delay:1s}.fw5{left:50%;top:7%;animation-delay:1.3s}
+.pdcCrackerWrap{height:210px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;user-select:none;outline:none}.pdcCracker{position:relative;width:170px;height:165px;transition:.25s}.pdcCrackerBody{position:absolute;left:50%;top:53px;transform:translateX(-50%);font-size:88px;filter:drop-shadow(0 0 8px #ff8a00aa);transition:.25s}.pdcFuse{position:absolute;width:82px;height:5px;right:20px;top:55px;background:#a9793a;border-radius:6px;transform:rotate(-23deg);transform-origin:left center}.pdcSparkTip{position:absolute;right:13px;top:27px;width:18px;height:18px;border-radius:50%;background:#777;opacity:.9}.pdcCracker.ignited .pdcSparkTip{background:#fff0a0;box-shadow:0 0 8px #fff,0 0 25px #ffb300;animation:pdcSpark .12s infinite alternate}.pdcCracker.ignited .pdcFuse{background:#ffb300;box-shadow:0 0 12px #ff9d00;animation:pdcFuse .35s linear forwards}.pdcBurst{position:absolute;left:50%;top:62px;opacity:0;font-size:28px;color:#ffd86b;text-shadow:0 0 15px #ffb300;transform:translate(-50%,-50%) scale(.2)}.pdcCracker.burst .pdcCrackerBody{animation:pdcBoom .75s ease forwards}.pdcCracker.burst .pdcBurst{opacity:1}.pdcCracker.burst .b1{animation:pdcB1 .7s ease-out forwards}.pdcCracker.burst .b2{animation:pdcB2 .7s ease-out forwards}.pdcCracker.burst .b3{animation:pdcB3 .7s ease-out forwards}.pdcCracker.burst .b4{animation:pdcB4 .7s ease-out forwards}.pdcCracker.burst .b5{animation:pdcB5 .7s ease-out forwards}
+.pdcHint{margin:5px 0 0;font-size:11px;color:#d7c7ae}.pdcLogin{display:none;text-align:left;margin-top:7px}.pdcLogin.show{display:block}.pdcLabel{display:block;font-size:11px;font-weight:800;color:#e9d8bd;margin:8px 0 5px}.pdcInput{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #8f6c37;background:#0b0a08;color:#fff;outline:none}.pdcInput:focus{border-color:#ffd76a;box-shadow:0 0 0 3px #ffd76a18}.pdcBtn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:11px;background:linear-gradient(90deg,#ffb300,#ffd35c);color:#271500;font-weight:900}.pdcError{display:none;color:#ff9b9b;font-size:11px;margin-top:8px;text-align:center}.pdcError.show{display:block}.pdcWelcome{display:none;color:#ffe39a;font-size:11px;margin-top:9px;text-align:center}.pdcWelcome.show{display:block}
+@keyframes pdcFire{from{transform:scale(.6) rotate(0);opacity:.35}to{transform:scale(1.3) rotate(18deg);opacity:1}}@keyframes pdcSpark{from{transform:scale(.7)}to{transform:scale(1.35)}}@keyframes pdcFuse{from{width:82px}to{width:18px}}@keyframes pdcBoom{0%{transform:translateX(-50%) scale(1)}45%{transform:translateX(-50%) scale(1.25);filter:drop-shadow(0 0 30px #ffd000)}100%{transform:translateX(-50%) scale(.88);opacity:.65}}@keyframes pdcB1{to{transform:translate(-105px,-70px) scale(1.4);opacity:0}}@keyframes pdcB2{to{transform:translate(85px,-55px) scale(1.3);opacity:0}}@keyframes pdcB3{to{transform:translate(-100px,55px) scale(1.3);opacity:0}}@keyframes pdcB4{to{transform:translate(105px,55px) scale(1.3);opacity:0}}@keyframes pdcB5{to{transform:translate(0,-95px) scale(1.5);opacity:0}}
+@media(max-width:600px){.pdcCard{padding:24px 20px 20px}.pdcBrand{font-size:27px}.pdcTitle{font-size:26px}.pdcCrackerWrap{height:185px}}
+</style>
+
+<style>
+/* V32: bolder brand hierarchy + digital 3D cracker, dashboard unchanged */
+.pdcBrand{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:.95;letter-spacing:1px}
+.pdcBrand .brandUnlimited{font-size:52px;font-weight:1000;letter-spacing:2px;color:#fff;text-shadow:0 3px 0 #7b4a08,0 0 10px #ffb300,0 0 28px #ff8c00aa,2px 5px 12px #000}
+.pdcBrand .brandMadurai{font-size:25px;font-weight:950;letter-spacing:4px;color:#ffd76a;text-shadow:0 2px 0 #6d4107,0 0 14px #ffb30099}
+.pdcTitle{font-size:32px;margin-top:13px;letter-spacing:2px}
+.pdcSub{font-size:12px}
+.pdcFest{font-size:22px;letter-spacing:12px;opacity:.9}
+.pdcCrackerWrap{height:220px}
+.pdcCracker{width:190px;height:175px}
+.pdcCrackerBody{top:47px;font-size:0;width:108px;height:126px}
+.cracker3d{position:relative;width:88px;height:116px;margin:auto;border-radius:13px 13px 18px 18px;background:linear-gradient(90deg,#5b160e 0%,#b52d13 16%,#ff6b22 38%,#c92b12 62%,#6e170d 100%);box-shadow:inset 8px 0 10px #ffb04a33,inset -10px 0 12px #22040099,0 8px 18px #0009,0 0 18px #ff5a1a33;transform:perspective(280px) rotateY(-7deg);border:2px solid #f58b35}
+.cracker3d:before{content:"";position:absolute;left:8px;right:8px;top:14px;height:6px;border-radius:50%;background:#ffb54d;box-shadow:0 4px 0 #7d1c0e}
+.crackerTop{position:absolute;left:10px;right:10px;top:-9px;height:19px;border-radius:50%;background:radial-gradient(ellipse at 45% 40%,#ffd878 0 12%,#d84a18 38%,#6e140c 72%);border:2px solid #f6a344;box-shadow:0 3px 8px #0008}
+.crackerTop:after{content:"";position:absolute;width:5px;height:28px;left:41px;top:-25px;background:linear-gradient(#8a6335,#c08a45);transform:rotate(-20deg);border-radius:5px}
+.crackerLabel{position:absolute;left:9px;right:9px;top:35px;text-align:center;font-size:13px;line-height:1.15;font-weight:1000;color:#ffe6a2;text-shadow:0 1px 2px #4b0b00;letter-spacing:1px}
+.crackerLabel b{font-size:16px;color:#fff5c2}
+.crackerStripe{position:absolute;left:0;right:0;top:76px;height:9px;background:linear-gradient(90deg,#ffd45a,#fff0a3,#f7a900);box-shadow:0 2px 4px #6a1408}
+.crackerBottom{position:absolute;left:7px;right:7px;bottom:-5px;height:14px;border-radius:50%;background:linear-gradient(#d84b17,#65130c);border:2px solid #e47b2e}
+.pdcCracker.ignited .cracker3d{animation:crackerFloat .18s infinite alternate;filter:drop-shadow(0 0 16px #ff8a00)}
+.pdcCracker.burst .cracker3d{animation:crackerBoom .75s ease forwards}
+@keyframes crackerFloat{from{transform:perspective(280px) rotateY(-7deg) translateY(0)}to{transform:perspective(280px) rotateY(-7deg) translateY(-3px) scale(1.015)}}
+@keyframes crackerBoom{0%{transform:perspective(280px) rotateY(-7deg) scale(1)}35%{transform:perspective(280px) rotateY(-7deg) scale(1.2);filter:brightness(1.8) drop-shadow(0 0 35px #ffd000)}70%{transform:perspective(280px) rotateY(-7deg) scale(.92);opacity:.9}100%{transform:perspective(280px) rotateY(-7deg) scale(.72);opacity:.35}}
+.pdcCracker.burst .pdcBurst{font-size:34px}
+@media(max-width:600px){.pdcBrand .brandUnlimited{font-size:40px}.pdcBrand .brandMadurai{font-size:21px}.pdcTitle{font-size:28px}.pdcCrackerWrap{height:195px}}
+</style>
+
+<style id="staff-mobile-override">
+/* STAFF MOBILE: same manager dashboard content, mobile/view-only presentation */
+@media (max-width: 700px){
+  body{overflow-x:hidden!important}
+  .sidebar,.side-nav,.nav,.manager-only,.upload-panel,.upload-controls,
+  input[type=file],button[onclick*="upload"],button[onclick*="Upload"],
+  .login-screen{display:none!important}
+  .main,.content,.dashboard,.app,.shell{width:100%!important;max-width:100%!important;margin:0!important;padding:10px!important}
+  .grid,.cards,.kpi-grid,.two-col,.three-col{grid-template-columns:1fr!important}
+  table{width:100%!important;font-size:11px!important}
+  th,td{padding:6px 5px!important}
+  .card{width:100%!important}
+  .hourly,.hourly-view,.hourly-section{display:none!important}
+}
+</style>
+<script>
+/* Staff mode: view-only; keep manager data/layout, hide controls and hourly sections. */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.documentElement.setAttribute('data-view','staff');
+  document.querySelectorAll('input,textarea,select').forEach(e=>e.setAttribute('disabled','disabled'));
+  document.querySelectorAll('button').forEach(b=>{
+    const t=(b.textContent||'').toLowerCase();
+    if(/upload|import|refresh|edit|delete|save|manager|settings|hourly/.test(t)) b.style.display='none';
+  });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // Staff mode: no username/password required; enter dashboard directly.
+  document.documentElement.setAttribute('data-staff-no-login','true');
+  const hideTerms=['login','username','password','sign in','sign-in'];
+  document.querySelectorAll('input,button,form,[class],[id]').forEach(el=>{
+    const s=((el.id||'')+' '+(el.className||'')+' '+(el.textContent||'')).toLowerCase();
+    if(hideTerms.some(x=>s.includes(x)) && !s.includes('dashboard')){
+      if(el.tagName==='INPUT' || el.tagName==='BUTTON' || el.tagName==='FORM') el.style.display='none';
+    }
+  });
+  // If a login overlay exists, hide it and reveal the app.
+  document.querySelectorAll('[class*="login"],[id*="login"],[class*="Login"],[id*="Login"]').forEach(el=>{
+    el.style.display='none';
+  });
+  document.body.classList.add('staff-direct-entry');
+});
+</script>
+<style>
+/* Direct-entry staff mobile */
+.staff-direct-entry .login,.staff-direct-entry #login,
+.staff-direct-entry .login-screen,.staff-direct-entry #loginScreen,
+.staff-direct-entry .login-overlay{display:none!important}
+@media(max-width:700px){
+  body{margin:0!important;overflow-x:hidden!important}
+  .sidebar,.side-nav,.nav,.manager-only,.upload-panel,.upload-controls,
+  input[type=file]{display:none!important}
+}
+</style>
+
+</body></html><style>
+/* V28: PB only — compact single-screen presentation. Division remains unchanged. */
+#pb .title{font-size:20px;margin-bottom:2px}
+#pb .sub{font-size:10px;line-height:1.3;margin:3px 0 7px}
+#pb .divisionNote{font-size:9px;line-height:1.3;padding:6px 8px;margin-bottom:7px}
+#pb .divisionLayout{grid-template-columns:58% 42%;gap:8px}
+#pb .divBigBox{border-radius:10px;padding:8px!important}
+#pb .divBoxHead{padding:0 0 6px!important;font-size:12px!important}
+#pb .divIntro{font-size:9px!important;line-height:1.3!important;margin-bottom:6px!important}
+#pb .performanceSummary{gap:5px!important;margin-bottom:6px!important}
+#pb .summaryCard{padding:6px 7px!important;border-radius:8px!important}
+#pb .summaryCard b{font-size:8px!important}
+#pb .summaryCard span{font-size:9px!important;line-height:1.25!important}
+#pb .pbCompactTable{font-size:8px!important}
+#pb .pbCompactTable th,#pb .pbCompactTable td{padding:5px 4px!important;font-size:8px!important;line-height:1.15!important}
+#pb .pbCompactTable th:nth-child(1){width:15%}
+#pb .pbCompactTable th:nth-child(2){width:23%}
+#pb .pbCompactTable th:nth-child(3),#pb .pbCompactTable th:nth-child(4){width:11%}
+#pb .pbCompactTable th:nth-child(5),#pb .pbCompactTable th:nth-child(6){width:12%}
+#pb .pbCompactTable th:nth-child(7){width:16%}
+#pb .divisionRight{padding-top:0}
+#pb .analysisPanel{border-radius:9px!important;padding:7px 8px!important;margin-bottom:6px!important}
+#pb .analysisPanel h4{font-size:9px!important;margin-bottom:3px!important}
+#pb .analysisPanel li{font-size:8px!important;line-height:1.25!important;margin:2px 0!important}
+#pb .divisionNote:last-child{margin-top:6px!important}
+</style>
+
+<style>
+/* V30: PDC 2026 festive login gate — existing dashboard untouched */
+#pdcGate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 42%,#3b1d00 0,#160b02 42%,#070707 100%);font-family:Arial,"Noto Sans Tamil",sans-serif;color:#fff}
+#pdcGate:before,#pdcGate:after{content:"";position:absolute;inset:auto;opacity:.9;pointer-events:none}
+.pdcSpark{position:absolute;width:6px;height:6px;border-radius:50%;background:#ffd86b;box-shadow:0 0 16px #ffb300;animation:pdcTwinkle 1.8s infinite alternate}
+.pdcSpark.s1{left:12%;top:22%}.pdcSpark.s2{left:84%;top:18%;animation-delay:.4s}.pdcSpark.s3{left:20%;top:78%;animation-delay:.8s}.pdcSpark.s4{left:78%;top:74%;animation-delay:1.1s}
+.pdcCard{position:relative;width:min(440px,92vw);padding:28px 26px 24px;border:1px solid #8f651f;border-radius:24px;background:linear-gradient(180deg,#241507ee,#0e0b09f5);box-shadow:0 25px 70px #000b,0 0 40px #ffb30022;text-align:center}
+.pdcTitle{font-size:30px;font-weight:900;letter-spacing:.5px;color:#ffd76a;text-shadow:0 0 18px #ff9d00aa}.pdcSub{margin-top:4px;font-size:12px;color:#ffe8b0}.pdcFest{margin:8px 0 2px;font-size:22px;letter-spacing:9px}.pdcHint{margin:12px 0 0;font-size:11px;color:#d7c7ae}
+.pdcLampWrap{height:205px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;user-select:none}.pdcLamp{position:relative;width:105px;height:128px;filter:drop-shadow(0 0 9px #ffb30033);transition:.25s}.pdcLamp .flame{position:absolute;left:50%;top:13px;transform:translateX(-50%) rotate(45deg);width:50px;height:50px;border-radius:50% 0 50% 50%;background:#ff8a00;box-shadow:0 0 22px #ffb300,0 0 55px #ff7a0022}.pdcLamp .flame:after{content:"";position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:50% 0 50% 50%;background:#fff2a1;box-shadow:0 0 15px #fff}.pdcLamp .base{position:absolute;left:22px;bottom:16px;width:61px;height:16px;border-radius:50%;background:#b8751d;box-shadow:0 3px 0 #70400f}.pdcLamp .stem{position:absolute;left:48px;bottom:28px;width:9px;height:63px;background:#c48729;border-radius:5px}.pdcLamp .glow{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:150px;height:150px;border-radius:50%;background:#ffb300;filter:blur(25px);opacity:0;transition:.5s}.pdcLamp.lit{filter:drop-shadow(0 0 22px #ffb300)}.pdcLamp.lit .glow{opacity:.72}.pdcLamp.lit .flame{animation:pdcFlame .75s infinite alternate}
+.pdcLogin{display:none;text-align:left;margin-top:4px}.pdcLogin.show{display:block}.pdcLabel{display:block;font-size:11px;font-weight:800;color:#e9d8bd;margin:8px 0 5px}.pdcInput{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #8f6c37;background:#0b0a08;color:#fff;outline:none}.pdcInput:focus{border-color:#ffd76a;box-shadow:0 0 0 3px #ffd76a18}.pdcBtn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:11px;background:linear-gradient(90deg,#ffb300,#ffd35c);color:#271500;font-weight:900}.pdcError{display:none;color:#ff9b9b;font-size:11px;margin-top:8px;text-align:center}.pdcError.show{display:block}.pdcWelcome{display:none;color:#ffe39a;font-size:11px;margin-top:9px;text-align:center}.pdcWelcome.show{display:block}
+@keyframes pdcTwinkle{from{transform:scale(.6);opacity:.35}to{transform:scale(1.35);opacity:1}}@keyframes pdcFlame{from{transform:translateX(-50%) rotate(43deg) scale(.95)}to{transform:translateX(-50%) rotate(47deg) scale(1.08)}}
+</style>
